@@ -7,7 +7,7 @@ class CNN(tf.keras.Model):
 		self.num_classes = num_classes
 
 		self.batch_size = 100
-		self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.05)
+		self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
 
 		self.normalize = tf.keras.layers.BatchNormalization()
 		self.flatten = tf.keras.layers.Flatten()

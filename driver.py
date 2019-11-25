@@ -44,7 +44,7 @@ def main():
     model = CNN(10)
 
     start = time.time()
-    epochs = 1000
+    epochs = 100
     for idx in range(epochs):
         loss = train(model, train_data, train_labels)
         progress = idx/epochs

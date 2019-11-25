@@ -1,6 +1,23 @@
 import tensorflow as tf
 import numpy as np
 
+def parse_file(filename):
+    out = np.zeros((10000, 93, 13))
+    line_num = 0
+    idx = 0
+    with open(filename, 'r') as data:
+        for line in data.readlines():
+            split = line.split()
+            if len(split) > 0: #line isn't blank
+                out[idx, line_num] = np.array(split, dtype=np.float32)
+                line_num += 1
+            else:
+                line_num = 0
+                idx += 1
+
+    out = np.expand_dims(out[0:idx], 3)
+    return out
+
 """
 Takes in file paths for the train and test files.
 
@@ -11,51 +28,8 @@ test_inputs: [2200, 93, 13]
 test_labels: [2200]
 """
 def get_data(train_file, test_file):
-    #open files
-    with open(train_file, 'r') as f:
-        train_data = f.read().split("\n")
-    with open(test_file, 'r') as f:
-        test_data = f.read().split("\n")
-
-
-    #process training data
-    train_inputs = []
-    line_num = 0
-    block = np.zeros([93, 13])
-
-    for i in range(1, len(train_data)):
-        line = train_data[i].split()
-        if len(line) == 13: #line isn't blank
-             block[line_num] = line
-             line_num += 1
-        else:
-            line_num = 0
-            # print(block)
-            # print(block.shape)
-            train_inputs.append(block)
-            block = np.zeros([93, 13])
-
-    train_inputs = np.array([train_inputs])
-    train_inputs = np.transpose(train_inputs, [1, 2, 3, 0])
-
-    #process testing data
-    test_inputs = []
-    line_num = 0
-    block = np.zeros([93, 13])
-
-    for i in range(1, len(test_data)):
-        line = test_data[i].split()
-        if len(line) == 13: #line isn't blank
-             block[line_num] = line
-             line_num += 1
-        else:
-            line_num = 0
-            test_inputs.append(block)
-            block = np.zeros([93, 13])
-
-    test_inputs = np.array([test_inputs])
-    test_inputs = np.transpose(test_inputs, [1, 2, 3, 0])
-
+    train_data = parse_file(train_file)
+    test_data = parse_file(test_file)
     #create training and testing labels
     train_labels = []
     test_labels = []
@@ -69,7 +43,7 @@ def get_data(train_file, test_file):
     train_labels = tf.one_hot(train_labels, 10)
     test_labels = tf.one_hot(test_labels, 10)
 
-    return train_inputs, train_labels, test_inputs, test_labels
+    return train_data, train_labels, test_data, test_labels
 
 def main():
     get_data('Train_Arabic_Digit.txt', 'Test_Arabic_Digit.txt')
