@@ -15,7 +15,7 @@ def parse_file(filename):
                 line_num = 0
                 idx += 1
 
-    out = np.expand_dims(out[0:idx], 3)
+    # out = np.expand_dims(out[0:idx], 3)
     return out
 
 """
